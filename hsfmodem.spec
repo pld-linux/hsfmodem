@@ -9,7 +9,7 @@ Group:		Base/Kernel
 Source0:	http://www.linuxant.com/drivers/hsf/free/archive/%{name}-%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	aa85060185dba1bd090c2d02ef1c9c8a
 URL:		http://www.linuxant.com/
-%{!?_without_dist_kernel:BuildRequires:	kernel-source }
+%{!?_without_dist_kernel:BuildRequires:	kernel-source}
 BuildRequires:	%{kgcc_package}
 %{!?_without_dist_kernel:%requires_releq_kernel_up}
 Requires:	pciutils
