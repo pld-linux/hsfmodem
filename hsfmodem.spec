@@ -24,7 +24,7 @@ This package contains only free version of the drivers (limited to
 %description -l pl
 Sterownik do winmodemów HSF firmy Conexant dla Linuxa.
 Ten pakiet zawiera tylko darmow± wersjê sterowników, która ogranicza
-transfer do 14kbps. Pe³na wersja dostêpna jest na linuxant.com
+transfer do 14kbps. Pe³na wersja dostêpna jest na linuxant.com.
 
 %prep
 %setup -q
