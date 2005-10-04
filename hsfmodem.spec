@@ -1,3 +1,7 @@
+#
+# Conditional build:
+%bcond_without	dist_kernel	# without distribution kernel
+#
 Summary:	Conexant HSF controllerless modem driver userspace utils
 Summary(pl):	Narzêdzia do sterownika winmodemów HSF firmy Conexant
 Name:		hsfmodem
@@ -13,9 +17,8 @@ Source1:	http://www.linuxant.com/drivers/hsf/full/archive/hsfmodem-7.18.00.06ful
 Source2:	http://www.linuxant.com/drivers/files/listmodem_app_linux.tar.gz
 # Source2-md5:	516f3825014eb460a0c16cbd927a80d1
 URL:		http://www.linuxant.com/
-%{!?_without_dist_kernel:BuildRequires:	kernel-source}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build}
 BuildRequires:	%{kgcc_package}
-%{!?_without_dist_kernel:%requires_releq_kernel_up}
 Requires:	pciutils
 ExclusiveArch:	%{ix86}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -28,34 +31,40 @@ This package contains only free version of the drivers (limited to
 %description -l pl
 Sterownik do winmodemów HSF firmy Conexant dla Linuksa.  Ten pakiet 
 zawiera tylko darmow± wersjê sterowników, która ogranicza transfer 
-do 14kbps i u¿ycie faxu. Pe³na wersja dostêpna jest na linuxant.com.
+do 14kbps i nie pozwala na u¿ycie faksu. Pe³na wersja dostêpna jest na
+linuxant.com.
 
 %package -n kernel-char-hsf
 Summary:	Conexant HSF controllerless modem driver 
 Summary(pl):	Sterownik do winmodemów HSF firmy Conexant
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_smp}
+%{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
-%{?with_dist_kernel:Requires(postun):	kernel-smp}
+%{?with_dist_kernel:Requires(postun):	kernel-up}
 
 %description -n kernel-char-hsf
-This is a Linux driver for Conexant HSF controllerless modem driver 
+This is a Linux driver for Conexant HSF controllerless modem driver.
 
 %description -n kernel-char-hsf -l pl
-Sterownik dla Linuksa do winmodemów HSF firmy Conexant
+Sterownik dla Linuksa do winmodemów HSF firmy Conexant.
 
 %prep
 %setup -q
 
 %build
-%{__make} all KERNELSRC=%{_kernelsrcdir}
-%{__make} --quiet --no-print-directory CNXT_KERNELSRC=%{_kernelsrcdir} DISTRO_CFLAGS="-D__MODULE_KERNEL_%{_target_cpu}=1" CNXT_MODS_DIR=binaries/linux-genetic clean all modules
+%{__make} all \
+	KERNELSRC=%{_kernelsrcdir}
+
+%{__make} --quiet --no-print-directory clean all modules \
+	CNXT_KERNELSRC=%{_kernelsrcdir} \
+	DISTRO_CFLAGS="-D__MODULE_KERNEL_%{_target_cpu}=1" \
+	CNXT_MODS_DIR=binaries/linux-genetic
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,-smp}/misc
+
 %{__make} install \
 	ROOT=$RPM_BUILD_ROOT \
 	KERNELSRC=%{_kernelsrcdir}
@@ -66,25 +75,17 @@ install modules/*.ko  $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
+#%post
 #%{_sbindir}/hsfconfig --auto
-%depmod %{_kernel_ver}
 
-%preun
+#%preun
 #%{_sbindir}/hsfconfig --remove
-
-%postun
-%depmod %{_kernel_ver}
 
 %post -n kernel-char-hsf
 %depmod %{_kernel_ver}
 
 %postun -n kernel-char-hsf
 %depmod %{_kernel_ver}
-
-%files -n kernel-char-hsf
-%defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/misc/*.ko*
 
 %files
 %defattr(644,root,root,755)
@@ -93,11 +94,15 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/hsfmodem
 %dir /etc/hsfmodem/nvm
 /etc/hsfmodem/package
-/usr/lib/hsfmodem/rchsf
 %config /etc/hsfmodem/nvm/*
 %dir %{_libdir}/hsfmodem
+%{_libdir}/hsfmodem/LICENSE
 %config %{_libdir}/hsfmodem/config.mak
+%{_libdir}/hsfmodem/rchsf
 %dir %{_libdir}/hsfmodem/modules
-%attr(644,root,root) %{_libdir}/hsfmodem/LICENSE
 %{_libdir}/hsfmodem/modules/[!k]*
 %attr(755,root,root) %{_libdir}/hsfmodem/modules/*.sh
+
+%files -n kernel-char-hsf
+%defattr(644,root,root,755)
+/lib/modules/%{_kernel_ver}/misc/*.ko*
