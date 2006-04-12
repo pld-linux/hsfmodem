@@ -2,40 +2,40 @@
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 #
+%define	_rel	1
 Summary:	Conexant HSF controllerless modem driver userspace utils
 Summary(pl):	Narzêdzia do sterownika winmodemów HSF firmy Conexant
 Name:		hsfmodem
 Version:	7.18.00.06full
-%define	_rel	1
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	Custom Licence by (c) 2003-2004 Linuxant inc. All rights reserved.
 Group:		Base/Kernel
-Source0:	http://www.linuxant.com/drivers/hsf/full/archive/%{name}-%{version}/%{name}-%{version}.tar.gz
+Source0:	http://www.linuxant.com/drivers/hsf/full/archive/%{name}-%{version}/hsfmodem-%{version}.tar.gz
 # Source0-md5:	2d725bd8e484a4037daefec6208ba28b
-Source1:	http://www.linuxant.com/drivers/hsf/full/archive/hsfmodem-7.18.00.06full/100498D_RM_HxF_Released.pdf
 # Source1-md5:	e6d8fea8f5f641d7bb4dfb33c6f478e7
+Source1:	http://www.linuxant.com/drivers/hsf/full/archive/hsfmodem-7.18.00.06full/100498D_RM_HxF_Released.pdf
 Source2:	http://www.linuxant.com/drivers/files/listmodem_app_linux.tar.gz
 # Source2-md5:	516f3825014eb460a0c16cbd927a80d1
 URL:		http://www.linuxant.com/
-%{?with_dist_kernel:BuildRequires:	kernel-module-build}
 BuildRequires:	%{kgcc_package}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build}
 Requires:	pciutils
 ExclusiveArch:	%{ix86}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Conexant HSF controllerless modem driver for Linux.
-This package contains only free version of the drivers (limited to
-14kbps and no fax). Full version is available at linuxant.com.
+Conexant HSF controllerless modem driver for Linux. This package
+contains only free version of the drivers (limited to 14kbps and no
+fax). Full version is available at linuxant.com.
 
 %description -l pl
-Sterownik do winmodemów HSF firmy Conexant dla Linuksa.  Ten pakiet 
-zawiera tylko darmow± wersjê sterowników, która ogranicza transfer 
-do 14kbps i nie pozwala na u¿ycie faksu. Pe³na wersja dostêpna jest na
+Sterownik do winmodemów HSF firmy Conexant dla Linuksa. Ten pakiet
+zawiera tylko darmow± wersjê sterowników, która ogranicza transfer do
+14kbps i nie pozwala na u¿ycie faksu. Pe³na wersja dostêpna jest na
 linuxant.com.
 
 %package -n kernel-char-hsf
-Summary:	Conexant HSF controllerless modem driver 
+Summary:	Conexant HSF controllerless modem driver
 Summary(pl):	Sterownik do winmodemów HSF firmy Conexant
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
@@ -91,10 +91,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc BUGS CHANGES CREDITS FAQ INSTALL LICENSE README
 %attr(755,root,root) %{_sbindir}/*
-%dir /etc/hsfmodem
-%dir /etc/hsfmodem/nvm
-/etc/hsfmodem/package
-%config /etc/hsfmodem/nvm/*
+%dir %{_sysconfdir}/hsfmodem
+%dir %{_sysconfdir}/hsfmodem/nvm
+%{_sysconfdir}/hsfmodem/package
+%config %{_sysconfdir}/hsfmodem/nvm/*
 %dir %{_libdir}/hsfmodem
 %{_libdir}/hsfmodem/LICENSE
 %config %{_libdir}/hsfmodem/config.mak
