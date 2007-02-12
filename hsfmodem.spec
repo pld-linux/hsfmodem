@@ -4,7 +4,7 @@
 #
 %define	_rel	1
 Summary:	Conexant HSF controllerless modem driver userspace utils
-Summary(pl):	Narzêdzia do sterownika winmodemów HSF firmy Conexant
+Summary(pl.UTF-8):   NarzÄ™dzia do sterownika winmodemÃ³w HSF firmy Conexant
 Name:		hsfmodem
 Version:	7.18.00.06full
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -28,15 +28,15 @@ Conexant HSF controllerless modem driver for Linux. This package
 contains only free version of the drivers (limited to 14kbps and no
 fax). Full version is available at linuxant.com.
 
-%description -l pl
-Sterownik do winmodemów HSF firmy Conexant dla Linuksa. Ten pakiet
-zawiera tylko darmow± wersjê sterowników, która ogranicza transfer do
-14kbps i nie pozwala na u¿ycie faksu. Pe³na wersja dostêpna jest na
+%description -l pl.UTF-8
+Sterownik do winmodemÃ³w HSF firmy Conexant dla Linuksa. Ten pakiet
+zawiera tylko darmowÄ… wersjÄ™ sterownikÃ³w, ktÃ³ra ogranicza transfer do
+14kbps i nie pozwala na uÅ¼ycie faksu. PeÅ‚na wersja dostÄ™pna jest na
 linuxant.com.
 
 %package -n kernel-char-hsf
 Summary:	Conexant HSF controllerless modem driver
-Summary(pl):	Sterownik do winmodemów HSF firmy Conexant
+Summary(pl.UTF-8):   Sterownik do winmodemÃ³w HSF firmy Conexant
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
@@ -46,8 +46,8 @@ Requires(post,postun):	/sbin/depmod
 %description -n kernel-char-hsf
 This is a Linux driver for Conexant HSF controllerless modem driver.
 
-%description -n kernel-char-hsf -l pl
-Sterownik dla Linuksa do winmodemów HSF firmy Conexant.
+%description -n kernel-char-hsf -l pl.UTF-8
+Sterownik dla Linuksa do winmodemÃ³w HSF firmy Conexant.
 
 %prep
 %setup -q
