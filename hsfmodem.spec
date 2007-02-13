@@ -4,7 +4,7 @@
 #
 %define	_rel	1
 Summary:	Conexant HSF controllerless modem driver userspace utils
-Summary(pl.UTF-8):   Narzędzia do sterownika winmodemów HSF firmy Conexant
+Summary(pl.UTF-8):	Narzędzia do sterownika winmodemów HSF firmy Conexant
 Name:		hsfmodem
 Version:	7.18.00.06full
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -36,7 +36,7 @@ linuxant.com.
 
 %package -n kernel-char-hsf
 Summary:	Conexant HSF controllerless modem driver
-Summary(pl.UTF-8):   Sterownik do winmodemów HSF firmy Conexant
+Summary(pl.UTF-8):	Sterownik do winmodemów HSF firmy Conexant
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
