@@ -12,8 +12,8 @@ License:	Custom Licence by (c) 2003-2004 Linuxant inc. All rights reserved.
 Group:		Base/Kernel
 Source0:	http://www.linuxant.com/drivers/hsf/full/archive/%{name}-%{version}/hsfmodem-%{version}.tar.gz
 # Source0-md5:	2d725bd8e484a4037daefec6208ba28b
-# Source1-md5:	e6d8fea8f5f641d7bb4dfb33c6f478e7
 Source1:	http://www.linuxant.com/drivers/hsf/full/archive/hsfmodem-7.18.00.06full/100498D_RM_HxF_Released.pdf
+# Source1-md5:	e6d8fea8f5f641d7bb4dfb33c6f478e7
 Source2:	http://www.linuxant.com/drivers/files/listmodem_app_linux.tar.gz
 # Source2-md5:	516f3825014eb460a0c16cbd927a80d1
 URL:		http://www.linuxant.com/
