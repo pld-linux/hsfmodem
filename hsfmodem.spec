@@ -1,4 +1,3 @@
-#Revision: 1.10 $, $Date: 2007-09-28 09:59:12 $
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
