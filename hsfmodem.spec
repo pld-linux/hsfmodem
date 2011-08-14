@@ -1,28 +1,40 @@
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
-%bcond_without	userspace	#
+%bcond_without	userspace	# don't build userspace programs
 %bcond_with	verbose		# verbose build (V=1)
-#
-%define	_rel	0.1
+
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
+%endif
+%if %{without userspace}
+# nothing to be placed to debuginfo package
+%define		_enable_debug_packages	0
+%endif
+
+%define		rel	0.1
+%define		pname	hsfmodem
 Summary:	Conexant HSF controllerless modem driver userspace utils
 Summary(pl.UTF-8):	Narzędzia do sterownika winmodemów HSF firmy Conexant
-Name:		hsfmodem
-Version:	7.60.00.09full
-Release:	%{_rel}@%{_kernel_ver_str}
-License:	Custom Licence by (c) 2003-2004 Linuxant inc. All rights reserved.
+Name:		%{pname}%{_alt_kernel}
+Version:	7.80.02.06full
+Release:	%{rel}
+License:	Custom Licence by (c) 2003-2010 Linuxant inc. All rights reserved.
 Group:		Base/Kernel
-Source0:	http://www.linuxant.com/drivers/hsf/full/archive/%{name}-%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	91e42c01c8d69ad79e0793770e2059d4
-Source1:	http://www.linuxant.com/drivers/hsf/full/archive/%{name}-%{version}/100498D_RM_HxF_Released.pdf
-# Source1-md5:	e6d8fea8f5f641d7bb4dfb33c6f478e7
-Source2:	http://www.linuxant.com/drivers/files/listmodem_app_linux.tar.gz
-# Source2-md5:	516f3825014eb460a0c16cbd927a80d1
+Source0:	http://www.linuxant.com/drivers/hsf/full/archive/%{pname}-%{version}/%{pname}-%{version}.tar.gz
+# Source0-md5:	8eb0935e86b898190bf20c08894af17e
+Source1:	https://linux.dell.com/files/ubuntu/hardy/modem-drivers/hsf/hsfmodem-7.68.00.09x86_64oem.tar.gz
+# Source1-md5:	9cfa801c88f9c61cb26db786d64872c7
+Source2:	http://www.linuxant.com/drivers/hsf/full/archive/%{pname}-%{version}/100498D_RM_HxF_Released.pdf
+# Source2-md5:	e6d8fea8f5f641d7bb4dfb33c6f478e7
+Source3:	http://www.linuxant.com/drivers/files/listmodem_app_linux.tar.gz
+# Source3-md5:	516f3825014eb460a0c16cbd927a80d1
+Patch0:		kernel.patch
 URL:		http://www.linuxant.com/
-BuildRequires:	%{kgcc_package}
-%{?with_dist_kernel:BuildRequires:      kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
+BuildRequires:	rpmbuild(macros) >= 1.379
 Requires:	pciutils
-ExclusiveArch:	%{ix86}
+ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -39,11 +51,13 @@ linuxant.com.
 %package -n kernel%{_alt_kernel}-char-hsf
 Summary:	Conexant HSF controllerless modem driver
 Summary(pl.UTF-8):	Sterownik do winmodemów HSF firmy Conexant
-Release:	%{_rel}@%{_kernel_ver_str}
+Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
-%{?with_dist_kernel:Requires(postun):	kernel%{_alt_kernel}}
+%if %{with dist_kernel}
+%requires_releq_kernel
+Requires(postun):	%releq_kernel
+%endif
 
 %description -n kernel%{_alt_kernel}-char-hsf
 This is a Linux driver for Conexant HSF controllerless modem driver.
@@ -53,15 +67,19 @@ Sterownik dla Linuksa do winmodemów HSF firmy Conexant.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %if %{with dist_kernel}
-%build_kernel_modules -m hsfpcibasic2,hsfmc97ich,hsfmc97via,hsfmc97ali,hsfmc97ati,hsfmc97sis,hsfusbcd2,hsfhda,hsfsoar,hsfserial,hsfengine,hsfosspec -C modules
+# see @CNXTMODS@ for module list
+# TODO: snd_hda_codec_hsfmodem missing
+%build_kernel_modules -C modules -m hsfpcibasic2,hsfpcibasic3,hsfmc97ich,hsfmc97via,hsfmc97ali,hsfmc97ati,hsfmc97sis,hsfusbcd2,hsfhda,hsfsoar,hsfserial,hsfengine,hsfosspec
 %endif
 
 %if %{with userspace}
 %{__make} all \
 	KERNELSRC=%{_kernelsrcdir}
+
 #TODO
 #%{__make} --quiet --no-print-directory clean all modules
 #	CNXT_KERNELSRC=%{_kernelsrcdir} \
@@ -72,7 +90,8 @@ Sterownik dla Linuksa do winmodemów HSF firmy Conexant.
 %install
 rm -rf $RPM_BUILD_ROOT
 %if %{with dist_kernel}
-%install_kernel_modules -d misc -m modules/hsfpcibasic2,modules/hsfmc97ich,modules/hsfmc97via,modules/hsfmc97ali,modules/hsfmc97ati,modules/hsfmc97sis,modules/hsfusbcd2,modules/hsfhda,modules/hsfsoar,modules/hsfserial,modules/hsfengine,modules/hsfosspec
+# see @CNXTMODS@ for module list
+%install_kernel_modules -d misc -m modules/hsfpcibasic2,modules/hsfpcibasic3,modules/hsfmc97ich,modules/hsfmc97via,modules/hsfmc97ali,modules/hsfmc97ati,modules/hsfmc97sis,modules/hsfusbcd2,modules/hsfhda,modules/hsfsoar,modules/hsfserial,modules/hsfengine,modules/hsfosspec
 %endif
 
 %if %{with userspace}

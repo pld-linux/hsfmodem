@@ -1,0 +1,32 @@
+http://ubuntuforums.org/showthread.php?t=1597605&page=4
+
+2.6.38 is just random number, not exactly verified when interface changed
+
+--- hsfmodem-7.80.02.06full/modules/GPL/oscompat.h~	2009-10-22 01:35:59.000000000 +0300
++++ hsfmodem-7.80.02.06full/modules/GPL/oscompat.h	2011-08-13 17:49:55.414597031 +0300
+@@ -343,7 +343,11 @@
+ #endif
+ 
+ #ifndef DECLARE_MUTEX
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,38)
+ #define DECLARE_MUTEX(name)                 struct semaphore name=MUTEX
++#else
++#define DECLARE_MUTEX(name)                 DEFINE_SEMAPHORE(name)
++#endif
+ #define init_MUTEX(x)                               *(x)=MUTEX
+ #endif
+ 
+--- hsfmodem-7.80.02.06full/modules/osdiag.c~	2006-08-14 15:38:52.000000000 +0300
++++ hsfmodem-7.80.02.06full/modules/osdiag.c	2011-08-13 17:54:29.264171320 +0300
+@@ -599,7 +599,11 @@
+ 
+ static struct file_operations diag_fops = {
+     .owner	= THIS_MODULE,
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,38)
+     .ioctl	= diag_ioctl,
++#else
++    .compat_ioctl	= diag_ioctl,
++#endif
+     .fasync	= diag_fasync,
+     .poll	= diag_poll,
+     .read	= diag_read,
