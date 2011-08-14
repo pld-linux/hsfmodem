@@ -48,6 +48,13 @@ zawiera tylko darmową wersję sterowników, która ogranicza transfer do
 14kbps i nie pozwala na użycie faksu. Pełna wersja dostępna jest na
 linuxant.com.
 
+%package doc
+Summary:	Documentation for Conexant HSF softmodem driver
+Group:		Documentation
+
+%description
+Documentation for Conexant HSF softmodem driver
+
 %package -n kernel%{_alt_kernel}-char-hsf
 Summary:	Conexant HSF controllerless modem driver
 Summary(pl.UTF-8):	Sterownik do winmodemów HSF firmy Conexant
@@ -68,6 +75,8 @@ Sterownik dla Linuksa do winmodemów HSF firmy Conexant.
 %prep
 %setup -q
 %patch0 -p1
+
+cp -p %{SOURCE2} .
 
 %build
 %if %{with dist_kernel}
@@ -131,6 +140,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/hsfmodem/modules
 %{_libdir}/hsfmodem/modules/[!k]*
 %attr(755,root,root) %{_libdir}/hsfmodem/modules/*.sh
+
+%files doc
+%defattr(644,root,root,755)
+%doc *.pdf
 %endif
 
 %if %{with dist_kernel}
