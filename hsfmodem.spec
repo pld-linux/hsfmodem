@@ -12,7 +12,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	0.1
+%define		rel		0.2
 %define		pname	hsfmodem
 Summary:	Conexant HSF controllerless modem driver userspace utils
 Summary(pl.UTF-8):	Narzędzia do sterownika winmodemów HSF firmy Conexant
@@ -48,11 +48,21 @@ zawiera tylko darmową wersję sterowników, która ogranicza transfer do
 14kbps i nie pozwala na użycie faksu. Pełna wersja dostępna jest na
 linuxant.com.
 
+%package module-build
+Summary:	Development files for building kernel modules
+Summary(de.UTF-8):	Development Dateien die beim Kernel Modul kompilationen gebraucht werden
+Summary(pl.UTF-8):	Pliki służące do budowania modułów jądra
+Group:		Development/Building
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description module-build
+Development files needed to build Linux kernel modules for hsfmodem.
+
 %package doc
 Summary:	Documentation for Conexant HSF softmodem driver
 Group:		Documentation
 
-%description
+%description doc
 Documentation for Conexant HSF softmodem driver
 
 %package -n kernel%{_alt_kernel}-char-hsf
@@ -88,12 +98,6 @@ cp -p %{SOURCE2} .
 %if %{with userspace}
 %{__make} all \
 	KERNELSRC=%{_kernelsrcdir}
-
-#TODO
-#%{__make} --quiet --no-print-directory clean all modules
-#	CNXT_KERNELSRC=%{_kernelsrcdir} \
-#	DISTRO_CFLAGS="-D__MODULE_KERNEL_%{_target_cpu}=1" \
-#	CNXT_MODS_DIR=binaries/linux-genetic
 %endif
 
 %install
@@ -107,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	ROOT=$RPM_BUILD_ROOT \
 	KERNELSRC=%{_kernelsrcdir}
+
+# created by pld kernel macros
+rm -rf $RPM_BUILD_ROOT%{_libdir}/hsfmodem/modules/o
 %endif
 
 %clean
@@ -132,10 +139,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/hsfmodem
 %dir %{_sysconfdir}/hsfmodem/nvm
 %{_sysconfdir}/hsfmodem/package
-%config %{_sysconfdir}/hsfmodem/nvm/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hsfmodem/nvm/*
+
+%files module-build
+%defattr(644,root,root,755)
 %dir %{_libdir}/hsfmodem
 %{_libdir}/hsfmodem/LICENSE
-%config %{_libdir}/hsfmodem/config.mak
+%config(noreplace) %verify(not md5 mtime size) %{_libdir}/hsfmodem/config.mak
 %{_libdir}/hsfmodem/rchsf
 %dir %{_libdir}/hsfmodem/modules
 %{_libdir}/hsfmodem/modules/[!k]*
