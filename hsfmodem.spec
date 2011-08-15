@@ -23,8 +23,8 @@ License:	Custom Licence by (c) 2003-2010 Linuxant inc. All rights reserved.
 Group:		Base/Kernel
 Source0:	http://www.linuxant.com/drivers/hsf/full/archive/%{pname}-%{version}/%{pname}-%{version}.tar.gz
 # Source0-md5:	8eb0935e86b898190bf20c08894af17e
-Source1:	https://linux.dell.com/files/ubuntu/hardy/modem-drivers/hsf/hsfmodem-7.68.00.09x86_64oem.tar.gz
-# Source1-md5:	9cfa801c88f9c61cb26db786d64872c7
+Source1:	http://linux.dell.com/files/ubuntu/hardy/modem-drivers/hsf/hsfmodem-7.68.00.09oem.tar.gz
+# Source1-md5:	71bccfcb8caed31b91e605889e94bcc9
 Source2:	http://www.linuxant.com/drivers/hsf/full/archive/%{pname}-%{version}/100498D_RM_HxF_Released.pdf
 # Source2-md5:	e6d8fea8f5f641d7bb4dfb33c6f478e7
 Source3:	http://www.linuxant.com/drivers/files/listmodem_app_linux.tar.gz
@@ -111,6 +111,8 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	ROOT=$RPM_BUILD_ROOT \
 	KERNELSRC=%{_kernelsrcdir}
+
+echo RPM > $RPM_BUILD_ROOT%{_sysconfdir}/hsfmodem/package
 
 # created by pld kernel macros
 rm -rf $RPM_BUILD_ROOT%{_libdir}/hsfmodem/modules/o
